@@ -1,36 +1,34 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ru.mirea.NettyClient;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
-/**
- *
- * @author msi 111
- */
-@Sharable 
-public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
+import ru.mirea.EncoderDecoder.Decoder;
+import ru.mirea.task.Task;
 
+@ChannelHandler.Sharable
+public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf>{
+
+    @Override
     public void channelActive(ChannelHandlerContext ctx) {
-    System.out.println("Connected");
-    ctx.writeAndFlush(Unpooled.copiedBuffer("Netty MAY rock!", CharsetUtil.UTF_8));
-}
-
-    protected void channelRead0(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
-        System.out.println(
-                "Client received: " + in.toString(CharsetUtil.UTF_8));
-
+        //ctx.write(Unpooled.copiedBuffer("Netty rocks!", CharsetUtil.UTF_8));
+        //ctx.flush();
     }
 
+    @Override
+    public void channelRead0(ChannelHandlerContext ctx, ByteBuf in) {
+        Task task = Decoder.decodedTaskServer(ByteBufUtil.getBytes(in));
+        System.out.println("Client received: " + task.print());
+    }
+
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
         ctx.close();
     }
+
 }
