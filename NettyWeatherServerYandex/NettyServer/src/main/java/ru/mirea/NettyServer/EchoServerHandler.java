@@ -1,12 +1,16 @@
 package ru.mirea.NettyServer;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
+import ru.mirea.EncoderDecoder.Decoder;
+import ru.mirea.EncoderDecoder.Encoder;
+import ru.mirea.task.Task;
 
 @ChannelHandler.Sharable
 public class EchoServerHandler extends ChannelInboundHandlerAdapter {
@@ -14,9 +18,14 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         ByteBuf in = (ByteBuf) msg;
-        System.out.println("Server received: " + in.toString(CharsetUtil.UTF_8));
-        String str = "Hi";
-        ctx.write(Unpooled.wrappedBuffer(str.getBytes()));
+        
+
+        byte[] b = (ByteBufUtil.getBytes(in));
+        Task task = Decoder.decodedTaskClient(ByteBufUtil.getBytes(in));
+        System.out.println("Server received: " + task.print());
+        task.setWeather("+10");
+        b = Encoder.encodedTaskServer(task);
+        ctx.writeAndFlush(Unpooled.copiedBuffer(b));
     }
 
     @Override

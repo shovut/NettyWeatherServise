@@ -11,9 +11,12 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.CharsetUtil;
+import io.netty.buffer.ByteBuf;
 
 import java.net.InetSocketAddress;
 import java.util.Scanner;
+import ru.mirea.EncoderDecoder.Encoder;
+import ru.mirea.task.Task;
 
 public class EchoClient {
     private final String host;
@@ -38,14 +41,21 @@ public class EchoClient {
                         }
                     });
             ChannelFuture f = b.connect().sync();
+            
             ChannelHandlerContext ctx = f.channel().pipeline().firstContext();
             Scanner scan = new Scanner(System.in);
-            String str = scan.next();
+            String str = scan.nextLine();
+            String[] tmp = new String[2];
+            Task task; byte[] temp;
             while (!str.equals("exit"))
             {
-            ctx.writeAndFlush(Unpooled.copiedBuffer(str, CharsetUtil.UTF_8));
-            str = scan.next();
+                tmp = str.split(" ");
+                task = new Task(tmp[0], tmp[1]);
+            temp = Encoder.encodedTaskClient(task);
+            ctx.writeAndFlush(Unpooled.copiedBuffer(Encoder.encodedTaskClient(task)));
+            str = scan.nextLine();
             }
+            
             f.channel().closeFuture().sync();
         } finally {
             group.shutdownGracefully().sync();
