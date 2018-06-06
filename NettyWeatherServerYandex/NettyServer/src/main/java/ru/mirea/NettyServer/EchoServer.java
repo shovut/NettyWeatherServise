@@ -9,10 +9,16 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import ru.mirea.task.Task;
+import ru.mirea.task.TaskExecutor;
 
 public class EchoServer {
 
     private final int port;
+    public Queue<Task> inQueue = new ArrayDeque<>();
+    public Queue<Task> outQueue = new ArrayDeque<>();
 
     public EchoServer(int port) {
         this.port = port;
@@ -24,6 +30,22 @@ public class EchoServer {
     }
 
     public void start() throws Exception {
+        
+        TaskExecutor execut = new TaskExecutor(inQueue, outQueue);
+  
+        Thread te0 = new Thread(execut);
+        Thread te1 = new Thread(execut);
+        Thread te2 = new Thread(execut);
+        Thread te3 = new Thread(execut);
+        Thread te4 = new Thread(execut);
+
+        te0.start();
+        te1.start();
+        te2.start();
+        te3.start();
+        te4.start();
+
+
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
@@ -33,7 +55,7 @@ public class EchoServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(new EchoServerHandler());
+                            socketChannel.pipeline().addLast(new EchoServerHandler(inQueue, outQueue));
                         }
                     });
             ChannelFuture f = b.bind().sync();
