@@ -22,7 +22,7 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf>{
     @Override
     public void channelRead0(ChannelHandlerContext ctx, ByteBuf in) {
         Task task = Decoder.decodedTaskServer(ByteBufUtil.getBytes(in));
-        System.out.println("Client received: " + task.print());
+        System.out.println("Client received: \n" + task.print());
     }
 
     @Override

@@ -6,13 +6,7 @@
         <artifactId>NettyWeatherServerYandex</artifactId>
         <version>0.1</version>
     </parent>
-    <artifactId>Task</artifactId>
+    <artifactId>WServer</artifactId>
+    <version>0.1</version>
     <packaging>jar</packaging>
-    <dependencies>
-        <dependency>
-            <groupId>ru.mirea</groupId>
-            <artifactId>WServer</artifactId>
-            <version>0.1</version>
-        </dependency>
-    </dependencies>
 </project>

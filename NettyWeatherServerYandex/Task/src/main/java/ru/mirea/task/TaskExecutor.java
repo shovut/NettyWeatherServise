@@ -8,6 +8,7 @@ package ru.mirea.task;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ru.mirea.wserver.ApiGetRequest;
 
 /**
  *
@@ -34,8 +35,8 @@ public class TaskExecutor implements Runnable{
                 if (!inQueue.isEmpty()){
                     //System.out.println("Executor inQueue! " + Thread.currentThread().getName());
                     temp = inQueue.poll();
-                    temp.setWeather("+10");
-                    System.out.println("task");
+                    temp.setWeather(ApiGetRequest.get(temp.getCity(), temp.getArea()));
+                    //System.out.println(temp.getWeather());
                 }
             }
             }
@@ -45,7 +46,7 @@ public class TaskExecutor implements Runnable{
                     //System.out.println("Executor outQueue! " + Thread.currentThread().getName());
                     outQueue.add(temp);
                     temp = null;
-                    System.out.println("task2");
+                    //System.out.println("task2");
                 }
             }
             }

@@ -27,7 +27,7 @@ public class Task {
     }
     
     public String print() {
-        return area + ' ' + city + ' ' + weather + ' ' ;
+        return area + ' ' + city + '\n' + weather + ' ' ;
     }
 
     public String getArea() {
