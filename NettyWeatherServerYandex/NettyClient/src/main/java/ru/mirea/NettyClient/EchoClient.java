@@ -50,6 +50,10 @@ public class EchoClient {
             while (!str.equals("exit")) {
                 try{
                 tmp = str.split(";");
+                if(tmp.length != 2){
+                    str = scan.nextLine();
+                    continue;
+                }
                 task = new Task(tmp[0], tmp[1]);
                 }catch(ArrayIndexOutOfBoundsException e){
                     System.out.println("Exeption");
