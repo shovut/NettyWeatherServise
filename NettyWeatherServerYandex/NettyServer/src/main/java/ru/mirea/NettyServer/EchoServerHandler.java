@@ -26,17 +26,20 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf in = (ByteBuf) msg;
         byte[] b = (ByteBufUtil.getBytes(in));
         Task task = Decoder.decodedTaskClient(ByteBufUtil.getBytes(in));
-        System.out.println("Server received: " + task.print());
+        System.out.println("Server received: \n" + task.print());
         
         /*Здесь вход в поток*/
         inQueue.add(task);
-        while(outQueue.isEmpty()){}
+        while(outQueue.isEmpty()){
+        Thread.sleep(100);
+        }
         task = outQueue.poll();
         /***************/
+        System.out.println(task.getWeather());
         b = Encoder.encodedTaskServer(task);
         ctx.writeAndFlush(Unpooled.copiedBuffer(b));
     }

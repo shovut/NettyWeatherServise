@@ -47,15 +47,20 @@ public class EchoClient {
             String str = scan.nextLine();
             String[] tmp = new String[2];
             Task task; byte[] temp;
-            while (!str.equals("exit"))
-            {
-                tmp = str.split(" ");
+            while (!str.equals("exit")) {
+                try{
+                tmp = str.split(";");
                 task = new Task(tmp[0], tmp[1]);
-            temp = Encoder.encodedTaskClient(task);
-            ctx.writeAndFlush(Unpooled.copiedBuffer(Encoder.encodedTaskClient(task)));
-            str = scan.nextLine();
+                }catch(ArrayIndexOutOfBoundsException e){
+                    System.out.println("Exeption");
+                    str = scan.nextLine();
+                    continue;
+                }
+                temp = Encoder.encodedTaskClient(task);
+                ctx.writeAndFlush(Unpooled.copiedBuffer(Encoder.encodedTaskClient(task)));
+                str = scan.nextLine();
             }
-            
+
             f.channel().closeFuture().sync();
         } finally {
             group.shutdownGracefully().sync();
